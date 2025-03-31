@@ -18,9 +18,14 @@
             --dice-bg: #3498db;
             --dice-text: white;
             --tab-inactive: #ddd;
+            --success-bg: rgba(46, 204, 113, 0.2);
+            --failure-bg: rgba(231, 76, 60, 0.2);
+            --advantage-bg: rgba(52, 152, 219, 0.2);
+            --threat-bg: rgba(155, 89, 182, 0.2);
+            --triumph-bg: rgba(241, 196, 15, 0.2);
+            --despair-bg: rgba(231, 76, 60, 0.2);
         }
 
-        /* Dark theme variables */
         .dark-theme {
             --bg-color: #121212;
             --text-color: #e0e0e0;
@@ -36,6 +41,25 @@
             --tab-inactive: #333;
         }
 
+        .success-predominant {
+            background-color: var(--success-bg);
+        }
+        .failure-predominant {
+            background-color: var(--failure-bg);
+        }
+        .advantage-predominant {
+            background-color: var(--advantage-bg);
+        }
+        .threat-predominant {
+            background-color: var(--threat-bg);
+        }
+        .triumph-predominant {
+            background-color: var(--triumph-bg);
+        }
+        .despair-predominant {
+            background-color: var(--despair-bg);
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             max-width: 900px;
@@ -45,6 +69,26 @@
             color: var(--text-color);
             transition: background-color 0.3s, color 0.3s;
         }
+        
+        .help-box {
+            background-color: var(--dice-bg);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .help-box button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+
         h1, h2 {
             text-align: center;
             color: var(--text-color);
@@ -103,7 +147,6 @@
             position: relative;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        /* Genesys dice styles */
         .genesys-dice {
             width: 70px;
             height: 70px;
@@ -128,13 +171,12 @@
             font-weight: bold;
             margin-top: 2px;
         }
-        .ability-dice { background-color: #3498db; color: white; }
+        .ability-dice { background-color: #2980b9; color: white; } /* Adjusted color */
         .proficiency-dice { background-color: #f1c40f; color: black; }
         .difficulty-dice { background-color: #9b59b6; color: white; }
         .challenge-dice { background-color: #e74c3c; color: white; }
         .boost-dice { background-color: #2ecc71; color: white; }
         .setback-dice { background-color: #34495e; color: white; }
-        .force-dice { background-color: #e67e22; color: white; }
         
         .dice-option:hover, .genesys-dice:hover {
             transform: scale(1.05);
@@ -165,12 +207,23 @@
             margin: 5px;
             font-weight: bold;
             position: relative;
-            background-color: var(--dice-bg);
+            background-color: white;
             color: var(--dice-text);
             box-shadow: 0 2px 3px rgba(0,0,0,0.2);
             border-radius: 5px;
+            border: 3px solid;
         }
-        /* Count badge for all dice types */
+        /* Specific border colors for each dice type */
+        .dice-in-pool[data-dicetype="ability"] { border-color: #2980b9; }
+        .dice-in-pool[data-dicetype="proficiency"] { border-color: #f39c12; }
+        .dice-in-pool[data-dicetype="difficulty"] { border-color: #8e44ad; }
+        .dice-in-pool[data-dicetype="challenge"] { border-color: #c0392b; }
+        .dice-in-pool[data-dicetype="boost"] { border-color: #27ae60; }
+        .dice-in-pool[data-dicetype="setback"] { border-color: #2c3e50; }
+        .dice-in-pool:not([data-dicetype]) {
+    background-color: var(--dice-bg);
+    color: var(--dice-text);
+}
         .dice-count {
             position: absolute;
             top: -8px;
@@ -250,6 +303,12 @@
             font-size: 10px;
             text-align: center;
         }
+        /* Symbol outlines for visibility */
+        .genesys-result svg circle {
+            stroke: #000;
+            stroke-width: 1.5;
+            stroke-opacity: 0.7;
+        }
         .genesys-result .dice-type {
             font-weight: bold;
             margin-top: 2px;
@@ -314,6 +373,11 @@
             width: 20px;
             height: 20px;
         }
+        .symbol svg circle {
+            stroke: #000;
+            stroke-width: 1.5;
+            stroke-opacity: 0.7;
+        }
         #theme-toggle-btn {
             position: fixed;
             bottom: 20px;
@@ -326,6 +390,11 @@
 </head>
 <body>
     <div class="container">
+        <div class="help-box">
+            <span>Tip: Left-click to add dice, Right-click to remove dice</span>
+            <button class="close-help">&times;</button>
+        </div>
+        
         <h1>Ultimate Dice Pool Roller</h1>
         
         <div class="tab-buttons">
@@ -371,7 +440,7 @@
             <div class="dice-selection">
                 <div class="genesys-dice ability-dice" data-type="ability">
                     <svg viewBox="0 0 100 100">
-                        <circle cx="50" cy="50" r="45" fill="#3498db"/>
+                        <circle cx="50" cy="50" r="45" fill="#2980b9"/>
                         <text x="50" y="55" text-anchor="middle" fill="white" font-size="40">A</text>
                     </svg>
                     <div class="dice-label">Ability</div>
@@ -411,13 +480,6 @@
                     </svg>
                     <div class="dice-label">Setback</div>
                 </div>
-                <div class="genesys-dice force-dice" data-type="force">
-                    <svg viewBox="0 0 100 100">
-                        <circle cx="50" cy="50" r="45" fill="#e67e22"/>
-                        <text x="50" y="55" text-anchor="middle" fill="white" font-size="40">F</text>
-                    </svg>
-                    <div class="dice-label">Force</div>
-                </div>
             </div>
             
             <div class="pool-section">
@@ -446,13 +508,13 @@
                     <div class="symbol"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="10" fill="#9b59b6"/></svg> Threat</div>
                     <div class="symbol"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="10" fill="#f1c40f"/></svg> Triumph</div>
                     <div class="symbol"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="10" fill="#e74c3c"/></svg> Despair</div>
-                    <div class="symbol"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="10" fill="#e67e22"/></svg> Light</div>
-                    <div class="symbol"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="10" fill="#2c3e50"/></svg> Dark</div>
                 </div>
                 <div class="total">
                     Results: 
                     <span id="genesys-success">0</span> Success, 
+                    <span id="genesys-failure">0</span> Failure,
                     <span id="genesys-advantage">0</span> Advantage, 
+                    <span id="genesys-threat">0</span> Threat,
                     <span id="genesys-triumph">0</span> Triumph, 
                     <span id="genesys-despair">0</span> Despair
                 </div>
@@ -479,6 +541,19 @@
         let rollHistory = [];
         
         document.addEventListener('DOMContentLoaded', function() {
+            // Help box functionality
+            const helpBox = document.querySelector('.help-box');
+            const closeHelpBtn = document.querySelector('.close-help');
+            
+            closeHelpBtn.addEventListener('click', function() {
+                helpBox.style.display = 'none';
+                localStorage.setItem('hideHelp', 'true');
+            });
+            
+            if (localStorage.getItem('hideHelp') === 'true') {
+                helpBox.style.display = 'none';
+            }
+
             // Theme toggle functionality
             const themeToggleBtn = document.getElementById('theme-toggle-btn');
             
@@ -637,71 +712,63 @@
             
             // Genesys dice results elements
             const genesysSuccessSpan = document.getElementById('genesys-success');
+            const genesysFailureSpan = document.getElementById('genesys-failure');
             const genesysAdvantageSpan = document.getElementById('genesys-advantage');
+            const genesysThreatSpan = document.getElementById('genesys-threat');
             const genesysTriumphSpan = document.getElementById('genesys-triumph');
             const genesysDespairSpan = document.getElementById('genesys-despair');
             
             let genesysPool = [];
             
-            // Genesys dice probabilities (approximate)
+            // Genesys dice probabilities
             const genesysDiceProbabilities = {
                 ability: [
-                    { success: 0, advantage: 0 }, // Blank
-                    { success: 1, advantage: 0 }, // 1 success
-                    { success: 1, advantage: 1 }, // 1 success, 1 advantage
-                    { success: 2, advantage: 0 }, // 2 success
-                    { success: 0, advantage: 2 }, // 2 advantage
-                    { success: 0, advantage: 1 }  // 1 advantage
+                    { success: 0, advantage: 0 },
+                    { success: 1, advantage: 0 },
+                    { success: 1, advantage: 1 },
+                    { success: 2, advantage: 0 },
+                    { success: 0, advantage: 2 },
+                    { success: 0, advantage: 1 }
                 ],
                 proficiency: [
-                    { success: 0, advantage: 0 }, // Blank
-                    { success: 1, advantage: 0 }, // 1 success
-                    { success: 1, advantage: 1 }, // 1 success, 1 advantage
-                    { success: 2, advantage: 0 }, // 2 success
-                    { success: 0, advantage: 2 }, // 2 advantage
-                    { success: 1, advantage: 0, triumph: 1 } // 1 success, 1 triumph
+                    { success: 0, advantage: 0 },
+                    { success: 1, advantage: 0 },
+                    { success: 1, advantage: 1 },
+                    { success: 2, advantage: 0 },
+                    { success: 0, advantage: 2 },
+                    { success: 1, advantage: 0, triumph: 1 }
                 ],
                 difficulty: [
-                    { failure: 0, threat: 0 }, // Blank
-                    { failure: 1, threat: 0 }, // 1 failure
-                    { failure: 2, threat: 0 }, // 2 failure
-                    { failure: 0, threat: 1 }, // 1 threat
-                    { failure: 0, threat: 2 }, // 2 threat
-                    { failure: 1, threat: 1 }  // 1 failure, 1 threat
+                    { failure: 1, threat: 0 },
+                    { failure: 2, threat: 0 },
+                    { failure: 0, threat: 1 },
+                    { failure: 0, threat: 2 },
+                    { failure: 1, threat: 1 },
+                    { failure: 0, threat: 0 }
                 ],
                 challenge: [
-                    { failure: 0, threat: 0 }, // Blank
-                    { failure: 1, threat: 0 }, // 1 failure
-                    { failure: 1, threat: 1 }, // 1 failure, 1 threat
-                    { failure: 2, threat: 0 }, // 2 failure
-                    { failure: 0, threat: 2 }, // 2 threat
-                    { failure: 0, threat: 0, despair: 1 } // 1 despair
+                    { failure: 1, threat: 0 },
+                    { failure: 1, threat: 1 },
+                    { failure: 2, threat: 0 },
+                    { failure: 0, threat: 2 },
+                    { failure: 0, threat: 0, despair: 1 },
+                    { failure: 0, threat: 0 }
                 ],
                 boost: [
-                    { success: 0, advantage: 0 }, // Blank
-                    { success: 1, advantage: 0 }, // 1 success
-                    { success: 1, advantage: 1 }, // 1 success, 1 advantage
-                    { success: 0, advantage: 2 }, // 2 advantage
-                    { success: 0, advantage: 1 }, // 1 advantage
-                    { success: 0, advantage: 0 }  // Blank
+                    { success: 0, advantage: 0 },
+                    { success: 1, advantage: 0 },
+                    { success: 1, advantage: 1 },
+                    { success: 0, advantage: 2 },
+                    { success: 0, advantage: 1 },
+                    { success: 0, advantage: 0 }
                 ],
                 setback: [
-                    { failure: 0, threat: 0 }, // Blank
-                    { failure: 1, threat: 0 }, // 1 failure
-                    { failure: 1, threat: 0 }, // 1 failure
-                    { failure: 0, threat: 1 }, // 1 threat
-                    { failure: 0, threat: 1 }, // 1 threat
-                    { failure: 0, threat: 0 }  // Blank
-                ],
-                force: [
-                    { light: 0, dark: 0 }, // Blank
-                    { light: 1, dark: 0 }, // 1 light
-                    { light: 1, dark: 0 }, // 1 light
-                    { light: 2, dark: 0 }, // 2 light
-                    { light: 0, dark: 1 }, // 1 dark
-                    { light: 0, dark: 1 }, // 1 dark
-                    { light: 0, dark: 2 }, // 2 dark
-                    { light: 0, dark: 0 }  // Blank
+                    { failure: 1, threat: 0 },
+                    { failure: 1, threat: 0 },
+                    { failure: 0, threat: 1 },
+                    { failure: 0, threat: 1 },
+                    { failure: 0, threat: 0 },
+                    { failure: 0, threat: 0 }
                 ]
             };
             
@@ -745,7 +812,6 @@
                 const results = [];
                 let success = 0, advantage = 0, triumph = 0;
                 let failure = 0, threat = 0, despair = 0;
-                let light = 0, dark = 0;
                 
                 genesysPool.forEach(type => {
                     const sides = genesysDiceProbabilities[type].length;
@@ -761,13 +827,33 @@
                     failure += result.failure || 0;
                     threat += result.threat || 0;
                     despair += result.despair || 0;
-                    light += result.light || 0;
-                    dark += result.dark || 0;
                 });
                 
                 // Calculate net results
                 const netSuccess = Math.max(0, success - failure);
+                const netFailure = Math.max(0, failure - success);
                 const netAdvantage = Math.max(0, advantage - threat);
+                const netThreat = Math.max(0, threat - advantage);
+                
+                // Determine predominant result for background highlighting
+                const poolSection = document.querySelector('#genesys .pool-section');
+                poolSection.classList.remove('success-predominant', 'failure-predominant', 
+                                          'advantage-predominant', 'threat-predominant',
+                                          'triumph-predominant', 'despair-predominant');
+                
+                if (triumph > 0 && triumph >= despair) {
+                    poolSection.classList.add('triumph-predominant');
+                } else if (despair > 0) {
+                    poolSection.classList.add('despair-predominant');
+                } else if (netSuccess > 0 && netSuccess >= netFailure && netSuccess >= netAdvantage && netSuccess >= netThreat) {
+                    poolSection.classList.add('success-predominant');
+                } else if (netFailure > 0 && netFailure >= netSuccess && netFailure >= netAdvantage && netFailure >= netThreat) {
+                    poolSection.classList.add('failure-predominant');
+                } else if (netAdvantage > 0 && netAdvantage >= netThreat) {
+                    poolSection.classList.add('advantage-predominant');
+                } else if (netThreat > 0) {
+                    poolSection.classList.add('threat-predominant');
+                }
                 
                 // Display results
                 genesysDiceResultsDiv.innerHTML = '';
@@ -787,24 +873,26 @@
                     
                     // Set color based on dice type
                     switch(result.type) {
-                        case 'ability': bg.setAttribute('fill', '#3498db'); break;
+                        case 'ability': bg.setAttribute('fill', '#2980b9'); break;
                         case 'proficiency': bg.setAttribute('fill', '#f1c40f'); break;
                         case 'difficulty': bg.setAttribute('fill', '#9b59b6'); break;
                         case 'challenge': bg.setAttribute('fill', '#e74c3c'); break;
                         case 'boost': bg.setAttribute('fill', '#2ecc71'); break;
                         case 'setback': bg.setAttribute('fill', '#34495e'); break;
-                        case 'force': bg.setAttribute('fill', '#e67e22'); break;
                     }
                     
                     svg.appendChild(bg);
                     
-                    // Add symbols based on result
+                    // Add symbols based on result with outlines
                     if (result.result.success > 0) {
                         const successSymbol = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                         successSymbol.setAttribute('cx', '30');
                         successSymbol.setAttribute('cy', '30');
                         successSymbol.setAttribute('r', '10');
                         successSymbol.setAttribute('fill', '#2ecc71');
+                        successSymbol.setAttribute('stroke', '#000');
+                        successSymbol.setAttribute('stroke-width', '1.5');
+                        successSymbol.setAttribute('stroke-opacity', '0.7');
                         svg.appendChild(successSymbol);
                     }
                     if (result.result.failure > 0) {
@@ -813,6 +901,9 @@
                         failureSymbol.setAttribute('cy', '30');
                         failureSymbol.setAttribute('r', '10');
                         failureSymbol.setAttribute('fill', '#e74c3c');
+                        failureSymbol.setAttribute('stroke', '#000');
+                        failureSymbol.setAttribute('stroke-width', '1.5');
+                        failureSymbol.setAttribute('stroke-opacity', '0.7');
                         svg.appendChild(failureSymbol);
                     }
                     if (result.result.advantage > 0) {
@@ -821,6 +912,9 @@
                         advantageSymbol.setAttribute('cy', '70');
                         advantageSymbol.setAttribute('r', '10');
                         advantageSymbol.setAttribute('fill', '#3498db');
+                        advantageSymbol.setAttribute('stroke', '#000');
+                        advantageSymbol.setAttribute('stroke-width', '1.5');
+                        advantageSymbol.setAttribute('stroke-opacity', '0.7');
                         svg.appendChild(advantageSymbol);
                     }
                     if (result.result.threat > 0) {
@@ -829,6 +923,9 @@
                         threatSymbol.setAttribute('cy', '70');
                         threatSymbol.setAttribute('r', '10');
                         threatSymbol.setAttribute('fill', '#9b59b6');
+                        threatSymbol.setAttribute('stroke', '#000');
+                        threatSymbol.setAttribute('stroke-width', '1.5');
+                        threatSymbol.setAttribute('stroke-opacity', '0.7');
                         svg.appendChild(threatSymbol);
                     }
                     if (result.result.triumph > 0) {
@@ -837,6 +934,9 @@
                         triumphSymbol.setAttribute('cy', '20');
                         triumphSymbol.setAttribute('r', '10');
                         triumphSymbol.setAttribute('fill', '#f1c40f');
+                        triumphSymbol.setAttribute('stroke', '#000');
+                        triumphSymbol.setAttribute('stroke-width', '1.5');
+                        triumphSymbol.setAttribute('stroke-opacity', '0.7');
                         svg.appendChild(triumphSymbol);
                     }
                     if (result.result.despair > 0) {
@@ -845,23 +945,10 @@
                         despairSymbol.setAttribute('cy', '80');
                         despairSymbol.setAttribute('r', '10');
                         despairSymbol.setAttribute('fill', '#e74c3c');
+                        despairSymbol.setAttribute('stroke', '#000');
+                        despairSymbol.setAttribute('stroke-width', '1.5');
+                        despairSymbol.setAttribute('stroke-opacity', '0.7');
                         svg.appendChild(despairSymbol);
-                    }
-                    if (result.result.light > 0) {
-                        const lightSymbol = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                        lightSymbol.setAttribute('cx', '30');
-                        lightSymbol.setAttribute('cy', '50');
-                        lightSymbol.setAttribute('r', '10');
-                        lightSymbol.setAttribute('fill', '#e67e22');
-                        svg.appendChild(lightSymbol);
-                    }
-                    if (result.result.dark > 0) {
-                        const darkSymbol = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                        darkSymbol.setAttribute('cx', '70');
-                        darkSymbol.setAttribute('cy', '50');
-                        darkSymbol.setAttribute('r', '10');
-                        darkSymbol.setAttribute('fill', '#2c3e50');
-                        svg.appendChild(darkSymbol);
                     }
                     
                     dieElement.appendChild(svg);
@@ -882,8 +969,6 @@
                     if (result.result.threat) resultParts.push(`${result.result.threat} Threat`);
                     if (result.result.triumph) resultParts.push('Triumph');
                     if (result.result.despair) resultParts.push('Despair');
-                    if (result.result.light) resultParts.push(`${result.result.light} Light`);
-                    if (result.result.dark) resultParts.push(`${result.result.dark} Dark`);
                     
                     if (resultParts.length === 0) {
                         tooltip += "Blank";
@@ -897,15 +982,19 @@
                 
                 // Update results display
                 genesysSuccessSpan.textContent = netSuccess;
+                genesysFailureSpan.textContent = netFailure;
                 genesysAdvantageSpan.textContent = netAdvantage;
+                genesysThreatSpan.textContent = netThreat;
                 genesysTriumphSpan.textContent = triumph;
                 genesysDespairSpan.textContent = despair;
                 genesysResultsDiv.style.display = 'block';
                 
-                // Add to history
+                // Add to history with all relevant information
                 addToHistory('genesys', genesysPool, results, {
                     success: netSuccess,
+                    failure: netFailure,
                     advantage: netAdvantage,
+                    threat: netThreat,
                     triumph,
                     despair
                 });
@@ -918,6 +1007,12 @@
                 updateGenesysPoolDisplay();
                 updateGenesysButtons();
                 genesysResultsDiv.style.display = 'none';
+                
+                // Remove any predominant background
+                const poolSection = document.querySelector('#genesys .pool-section');
+                poolSection.classList.remove('success-predominant', 'failure-predominant', 
+                                          'advantage-predominant', 'threat-predominant',
+                                          'triumph-predominant', 'despair-predominant');
             });
             
             function updateGenesysPoolDisplay() {
@@ -942,17 +1037,20 @@
                     bg.setAttribute('cx', '50');
                     bg.setAttribute('cy', '50');
                     bg.setAttribute('r', '45');
+                    bg.setAttribute('fill', 'white');
                     
-                    // Set color based on dice type
+                    // Set border color based on dice type
+                    let borderColor = '#3498db';
                     switch(type) {
-                        case 'ability': bg.setAttribute('fill', '#3498db'); break;
-                        case 'proficiency': bg.setAttribute('fill', '#f1c40f'); break;
-                        case 'difficulty': bg.setAttribute('fill', '#9b59b6'); break;
-                        case 'challenge': bg.setAttribute('fill', '#e74c3c'); break;
-                        case 'boost': bg.setAttribute('fill', '#2ecc71'); break;
-                        case 'setback': bg.setAttribute('fill', '#34495e'); break;
-                        case 'force': bg.setAttribute('fill', '#e67e22'); break;
+                        case 'ability': borderColor = '#2980b9'; break;
+                        case 'proficiency': borderColor = '#f1c40f'; break;
+                        case 'difficulty': borderColor = '#9b59b6'; break;
+                        case 'challenge': borderColor = '#e74c3c'; break;
+                        case 'boost': borderColor = '#2ecc71'; break;
+                        case 'setback': borderColor = '#34495e'; break;
                     }
+                    bg.setAttribute('stroke', borderColor);
+                    bg.setAttribute('stroke-width', '5');
                     
                     svg.appendChild(bg);
                     
@@ -961,20 +1059,13 @@
                     text.setAttribute('x', '50');
                     text.setAttribute('y', '55');
                     text.setAttribute('text-anchor', 'middle');
-                    text.setAttribute('fill', type === 'proficiency' ? 'black' : 'white');
+                    text.setAttribute('fill', type === 'proficiency' ? 'black' : borderColor);
                     text.setAttribute('font-size', '40');
+                    text.setAttribute('font-weight', 'bold');
                     text.textContent = type.charAt(0).toUpperCase();
                     svg.appendChild(text);
                     
                     dieElement.appendChild(svg);
-                    
-                    // Add dice type label
-                    const typeLabel = document.createElement('div');
-                    typeLabel.style.fontSize = '10px';
-                    typeLabel.style.fontWeight = 'bold';
-                    typeLabel.style.marginTop = '2px';
-                    typeLabel.textContent = getGenesysDiceName(type).charAt(0);
-                    dieElement.appendChild(typeLabel);
                     
                     // Add count badge if more than one
                     if (count > 1) {
@@ -996,7 +1087,6 @@
                 genesysClearBtn.disabled = genesysPool.length === 0;
             }
             
-            // Helper function to get full Genesys dice names
             function getGenesysDiceName(type) {
                 const names = {
                     'ability': 'Ability',
@@ -1004,8 +1094,7 @@
                     'difficulty': 'Difficulty',
                     'challenge': 'Challenge',
                     'boost': 'Boost',
-                    'setback': 'Setback',
-                    'force': 'Force'
+                    'setback': 'Setback'
                 };
                 return names[type] || type;
             }
@@ -1023,7 +1112,6 @@
                 historyItem.className = 'history-item';
                 
                 if (type === 'standard') {
-                    // Standard dice history
                     const diceCount = {};
                     pool.forEach(sides => {
                         diceCount[sides] = (diceCount[sides] || 0) + 1;
@@ -1037,7 +1125,6 @@
                     const resultValues = results.map(r => r.value);
                     historyItem.textContent = `${notation} → [${resultValues.join(', ')}] = ${total}`;
                 } else {
-                    // Genesys dice history
                     const diceCount = {};
                     pool.forEach(dieType => {
                         diceCount[dieType] = (diceCount[dieType] || 0) + 1;
@@ -1050,7 +1137,9 @@
                     
                     let resultText = '';
                     if (total.success > 0) resultText += `${total.success} Success `;
+                    if (total.failure > 0) resultText += `${total.failure} Failure `;
                     if (total.advantage > 0) resultText += `${total.advantage} Advantage `;
+                    if (total.threat > 0) resultText += `${total.threat} Threat `;
                     if (total.triumph > 0) resultText += `${total.triumph} Triumph `;
                     if (total.despair > 0) resultText += `${total.despair} Despair`;
                     
