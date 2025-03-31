@@ -20,7 +20,7 @@
             --tab-inactive: #ddd;
         }
 
-        
+        /* Dark theme variables */
         .dark-theme {
             --bg-color: #121212;
             --text-color: #e0e0e0;
@@ -103,7 +103,7 @@
             position: relative;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        
+        /* Genesys dice styles */
         .genesys-dice {
             width: 70px;
             height: 70px;
@@ -170,7 +170,7 @@
             box-shadow: 0 2px 3px rgba(0,0,0,0.2);
             border-radius: 5px;
         }
-        
+        /* Count badge for all dice types */
         .dice-count {
             position: absolute;
             top: -8px;
@@ -475,25 +475,25 @@
     </audio>
 
     <script>
-       
+        // Global history array
         let rollHistory = [];
         
         document.addEventListener('DOMContentLoaded', function() {
-         y
+            // Theme toggle functionality
             const themeToggleBtn = document.getElementById('theme-toggle-btn');
             
             themeToggleBtn.addEventListener('click', function() {
                 document.body.classList.toggle('dark-theme');
-            
+                // Save preference to localStorage
                 localStorage.setItem('darkTheme', document.body.classList.contains('dark-theme'));
             });
             
-          
+            // Check for saved theme preference
             if (localStorage.getItem('darkTheme') === 'true') {
                 document.body.classList.add('dark-theme');
             }
 
-          
+            // Tab switching
             const tabButtons = document.querySelectorAll('.tab-button');
             const tabContents = document.querySelectorAll('.tab-content');
             
@@ -509,7 +509,7 @@
                 });
             });
             
-         
+            // Standard dice functionality
             const standardDiceOptions = document.querySelectorAll('#standard .dice-option');
             const standardDicePool = document.getElementById('standard-pool');
             const standardRollBtn = document.getElementById('standard-roll-btn');
@@ -546,11 +546,11 @@
             standardRollBtn.addEventListener('click', async function() {
                 if (standardPool.length === 0) return;
                 
-               
+                // Play sound
                 document.getElementById('dice-sound').currentTime = 0;
                 document.getElementById('dice-sound').play();
                 
-              
+                // Add rolling animation if not skipped
                 if (!skipAnimationCheckbox.checked) {
                     standardRollBtn.disabled = true;
                     standardRollBtn.classList.add('rolling');
@@ -558,7 +558,7 @@
                     standardRollBtn.classList.remove('rolling');
                 }
                 
-                
+                // Roll all dice in pool
                 const results = [];
                 let total = 0;
                 
@@ -568,7 +568,7 @@
                     total += roll;
                 });
                 
-                
+                // Display results
                 standardDiceResultsDiv.innerHTML = '';
                 results.forEach(result => {
                     const dieElement = document.createElement('div');
@@ -581,7 +581,7 @@
                 standardTotalResultSpan.textContent = total;
                 standardResultsDiv.style.display = 'block';
                 
-               
+                // Add to history
                 addToHistory('standard', standardPool, results, total);
                 
                 standardRollBtn.disabled = standardPool.length === 0;
@@ -609,7 +609,7 @@
                     dieElement.textContent = `d${sides}`;
                     dieElement.title = `${count}d${sides}`;
                     
-                    
+                    // Add count badge
                     if (count > 1) {
                         const countBadge = document.createElement('div');
                         countBadge.className = 'dice-count';
@@ -626,7 +626,7 @@
                 standardClearBtn.disabled = standardPool.length === 0;
             }
             
-           
+            // Genesys dice functionality
             const genesysDiceOptions = document.querySelectorAll('#genesys .genesys-dice');
             const genesysDicePool = document.getElementById('genesys-pool');
             const genesysRollBtn = document.getElementById('genesys-roll-btn');
@@ -635,7 +635,7 @@
             const genesysDiceResultsDiv = document.getElementById('genesys-dice-results');
             const genesysSkipAnimationCheckbox = document.getElementById('genesys-skip-animation');
             
-           
+            // Genesys dice results elements
             const genesysSuccessSpan = document.getElementById('genesys-success');
             const genesysAdvantageSpan = document.getElementById('genesys-advantage');
             const genesysTriumphSpan = document.getElementById('genesys-triumph');
@@ -643,7 +643,7 @@
             
             let genesysPool = [];
             
-           
+            // Genesys dice probabilities (approximate)
             const genesysDiceProbabilities = {
                 ability: [
                     { success: 0, advantage: 0 }, // Blank
@@ -729,11 +729,11 @@
             genesysRollBtn.addEventListener('click', async function() {
                 if (genesysPool.length === 0) return;
                 
-               
+                // Play sound
                 document.getElementById('dice-sound').currentTime = 0;
                 document.getElementById('dice-sound').play();
                 
-              
+                // Add rolling animation if not skipped
                 if (!genesysSkipAnimationCheckbox.checked) {
                     genesysRollBtn.disabled = true;
                     genesysRollBtn.classList.add('rolling');
@@ -741,7 +741,7 @@
                     genesysRollBtn.classList.remove('rolling');
                 }
                 
-                
+                // Roll all dice in pool
                 const results = [];
                 let success = 0, advantage = 0, triumph = 0;
                 let failure = 0, threat = 0, despair = 0;
@@ -754,7 +754,7 @@
                     
                     results.push({ type, result });
                     
-                   
+                    // Sum up all results
                     success += result.success || 0;
                     advantage += result.advantage || 0;
                     triumph += result.triumph || 0;
@@ -765,27 +765,27 @@
                     dark += result.dark || 0;
                 });
                 
-                
+                // Calculate net results
                 const netSuccess = Math.max(0, success - failure);
                 const netAdvantage = Math.max(0, advantage - threat);
                 
-            
+                // Display results
                 genesysDiceResultsDiv.innerHTML = '';
                 results.forEach((result, index) => {
                     const dieElement = document.createElement('div');
                     dieElement.className = `genesys-result ${result.type}-dice`;
                     
-                  
+                    // Create SVG for the result
                     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
                     svg.setAttribute('viewBox', '0 0 100 100');
                     
-                   
+                    // Background
                     const bg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                     bg.setAttribute('cx', '50');
                     bg.setAttribute('cy', '50');
                     bg.setAttribute('r', '45');
                     
-                 
+                    // Set color based on dice type
                     switch(result.type) {
                         case 'ability': bg.setAttribute('fill', '#3498db'); break;
                         case 'proficiency': bg.setAttribute('fill', '#f1c40f'); break;
@@ -798,7 +798,7 @@
                     
                     svg.appendChild(bg);
                     
-                  
+                    // Add symbols based on result
                     if (result.result.success > 0) {
                         const successSymbol = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                         successSymbol.setAttribute('cx', '30');
@@ -866,13 +866,13 @@
                     
                     dieElement.appendChild(svg);
                     
-                   
+                    // Add dice type label
                     const typeLabel = document.createElement('div');
                     typeLabel.className = 'dice-type';
                     typeLabel.textContent = getGenesysDiceName(result.type);
                     dieElement.appendChild(typeLabel);
                     
-                   
+                    // Set tooltip with detailed results
                     let tooltip = `${getGenesysDiceName(result.type)}: `;
                     const resultParts = [];
                     
@@ -895,13 +895,14 @@
                     genesysDiceResultsDiv.appendChild(dieElement);
                 });
                 
-               
+                // Update results display
                 genesysSuccessSpan.textContent = netSuccess;
                 genesysAdvantageSpan.textContent = netAdvantage;
                 genesysTriumphSpan.textContent = triumph;
                 genesysDespairSpan.textContent = despair;
                 genesysResultsDiv.style.display = 'block';
                 
+                // Add to history
                 addToHistory('genesys', genesysPool, results, {
                     success: netSuccess,
                     advantage: netAdvantage,
@@ -932,17 +933,17 @@
                     dieElement.className = `dice-in-pool`;
                     dieElement.setAttribute('data-dicetype', type);
                     
-                   
+                    // Create SVG
                     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
                     svg.setAttribute('viewBox', '0 0 100 100');
                     
-                  
+                    // Background
                     const bg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                     bg.setAttribute('cx', '50');
                     bg.setAttribute('cy', '50');
                     bg.setAttribute('r', '45');
                     
-               
+                    // Set color based on dice type
                     switch(type) {
                         case 'ability': bg.setAttribute('fill', '#3498db'); break;
                         case 'proficiency': bg.setAttribute('fill', '#f1c40f'); break;
@@ -955,7 +956,7 @@
                     
                     svg.appendChild(bg);
                     
-                  
+                    // Add dice type initial
                     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                     text.setAttribute('x', '50');
                     text.setAttribute('y', '55');
@@ -967,7 +968,7 @@
                     
                     dieElement.appendChild(svg);
                     
-                  
+                    // Add dice type label
                     const typeLabel = document.createElement('div');
                     typeLabel.style.fontSize = '10px';
                     typeLabel.style.fontWeight = 'bold';
@@ -975,7 +976,7 @@
                     typeLabel.textContent = getGenesysDiceName(type).charAt(0);
                     dieElement.appendChild(typeLabel);
                     
-                    
+                    // Add count badge if more than one
                     if (count > 1) {
                         const countBadge = document.createElement('div');
                         countBadge.className = 'dice-count';
@@ -983,7 +984,7 @@
                         dieElement.appendChild(countBadge);
                     }
                     
-                
+                    // Set tooltip
                     dieElement.title = `${count} ${getGenesysDiceName(type)} ${count > 1 ? 'Dice' : 'Die'}`;
                     
                     genesysDicePool.appendChild(dieElement);
@@ -995,7 +996,7 @@
                 genesysClearBtn.disabled = genesysPool.length === 0;
             }
             
-         
+            // Helper function to get full Genesys dice names
             function getGenesysDiceName(type) {
                 const names = {
                     'ability': 'Ability',
@@ -1009,7 +1010,7 @@
                 return names[type] || type;
             }
             
-          
+            // History functionality
             const clearHistoryBtn = document.getElementById('clear-history-btn');
             
             clearHistoryBtn.addEventListener('click', function() {
@@ -1056,13 +1057,13 @@
                     historyItem.textContent = `${notation} → ${resultText.trim()}`;
                 }
                 
-                
+                // Add to history array and list
                 rollHistory.unshift(historyItem.textContent);
                 if (rollHistory.length > 20) {
                     rollHistory.pop();
                 }
                 
-              
+                // Refresh history display
                 historyList.innerHTML = '';
                 rollHistory.forEach(item => {
                     const historyEntry = document.createElement('div');
@@ -1072,7 +1073,7 @@
                 });
             }
             
-            
+            // Prevent context menu on dice pools
             standardDicePool.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
             });
